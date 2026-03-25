@@ -84,3 +84,6 @@ The scope of the project covers end-to-end simulation: taking an initial user-de
 - **Bug Reports & Feature Requests**: Please use the project's issue tracker. Ensure you include browser console logs and backend traceback output when reporting bugs.
 - **Adding Personas**: You can easily expand the market simulation by adding new dictionary entries to the `PERSONAS` list within `simulation_server.py`.
 - **Pull Requests**: Ensure all backend changes are strictly type-hinted and maintain async compatibility. For frontend contributions, keep the architecture framework-free (vanilla JS/HTML/CSS) for the core orchestrator to prevent heavy overhead.
+ 
+## License
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
