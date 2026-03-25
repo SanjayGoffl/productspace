@@ -17,19 +17,19 @@ python run_test.py
 
 ### Method 2: Set environment variable manually (Windows CMD)
 ```cmd
-set GOOGLE_GEMINI_API_KEY=AIzaSyAv4j2rwnB239nWfEYR3eHWy7OOPNLyuVw
+set GOOGLE_GEMINI_API_KEY=<YOUR_API_KEY>
 python test_market_setup.py
 ```
 
 ### Method 3: Set environment variable manually (Windows PowerShell)
 ```powershell
-$env:GOOGLE_GEMINI_API_KEY="AIzaSyAv4j2rwnB239nWfEYR3eHWy7OOPNLyuVw"
+$env:GOOGLE_GEMINI_API_KEY="<YOUR_API_KEY>"
 python test_market_setup.py
 ```
 
 ### Method 4: Set environment variable manually (Linux/Mac)
 ```bash
-export GOOGLE_GEMINI_API_KEY=AIzaSyAv4j2rwnB239nWfEYR3eHWy7OOPNLyuVw
+export GOOGLE_GEMINI_API_KEY=<YOUR_API_KEY>
 python test_market_setup.py
 ```
 
