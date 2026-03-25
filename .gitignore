@@ -1,0 +1,41 @@
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables (CRITICAL: Do not upload secrets)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+err.txt
+
+# Large artifacts and temporary data
+docs.zip
+docs/
+market/TinyTroupe/.git/
+market/TinyTroupe/build/
+market/TinyTroupe/dist/
+market/TinyTroupe/data/
+market/TinyTroupe/examples/
+market/TinyTroupe/publications/
+market/TinyTroupe/test_output.txt
+market/TinyTroupe/test_comparison.txt
+market/TinyTroupe/*.log
+market/TinyTroupe/tinytroupe.egg-info/
+
+# OS specific files
+.DS_Store
+Thumbs.db
