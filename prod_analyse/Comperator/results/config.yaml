@@ -1,0 +1,8 @@
+gemini:
+  api_key: ''
+llm:
+  model_name: models/gemini-2.5-flash
+settings:
+  languages:
+  - en
+  max_pages: 10
