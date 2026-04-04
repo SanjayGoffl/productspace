@@ -646,8 +646,6 @@ class SemanticMemory(TinyMemory):
     #####################################
 
     def _build_document_from(self, memory) -> Document:
-        # TODO: add any metadata as well?
-
         # make sure we are dealing with a dictionary
         if not isinstance(memory, dict):
             memory = {"content": memory, "type": "information"}
@@ -656,7 +654,7 @@ class SemanticMemory(TinyMemory):
         memory_txt = json.dumps(memory, ensure_ascii=False)
         logger.debug(f"Building document from memory: {memory_txt}")
 
-        return Document(text=memory_txt)
+        return Document(text=memory_txt, metadata=memory)
 
     def _build_documents_from(self, memories: list) -> list:
         return [self._build_document_from(memory) for memory in memories]
