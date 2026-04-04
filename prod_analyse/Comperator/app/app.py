@@ -125,7 +125,7 @@ Return the result ONLY as a valid JSON array of objects, with each object having
             try:
                 found_competitors = json.loads(res_content)
                 existing_competitors = load_competitors()
-                existing_names = [c["name"].lower() for c in existing_competitors]
+                existing_names = {c["name"].lower() for c in existing_competitors}
                 
                 added_count = 0
                 for comp in found_competitors:
@@ -137,7 +137,7 @@ Return the result ONLY as a valid JSON array of objects, with each object having
                             "start_urls": comp.get("start_urls", comp.get("start,urls", []))
                         }
                         existing_competitors.append(clean_comp)
-                        existing_names.append(name.lower())
+                        existing_names.add(name.lower())
                         added_count += 1
                 
                 if added_count > 0:
