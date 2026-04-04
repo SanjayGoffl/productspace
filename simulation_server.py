@@ -61,6 +61,10 @@ class LLMOrchestrator:
     
     def __init__(self):
         self.backends = []
+        # Optimization: Use a single shared httpx.AsyncClient for connection pooling.
+        # This prevents creating a new client per request, reducing TCP handshake overhead
+        # and preventing ephemeral port exhaustion during concurrent simulations.
+        self.http_client = httpx.AsyncClient(timeout=60.0)
         self._init_backends()
     
     def _init_backends(self):
@@ -131,11 +135,10 @@ class LLMOrchestrator:
     async def _check_ollama(self) -> bool:
         """Check if Ollama is running locally."""
         try:
-            async with httpx.AsyncClient(timeout=2.0) as client:
-                r = await client.get("http://localhost:11434/api/tags")
-                if r.status_code == 200:
-                    models = [m["name"] for m in r.json().get("models", [])]
-                    return any("qwen" in m for m in models)
+            r = await self.http_client.get("http://localhost:11434/api/tags", timeout=2.0)
+            if r.status_code == 200:
+                models = [m["name"] for m in r.json().get("models", [])]
+                return any("qwen" in m for m in models)
         except Exception:
             pass
         return False
@@ -179,15 +182,14 @@ class LLMOrchestrator:
     async def _call_ollama(self, backend: dict, messages: list) -> str:
         """Call local Ollama API."""
         async with backend["semaphore"]:
-            async with httpx.AsyncClient(timeout=60.0) as client:
-                payload = {
-                    "model": backend["model"],
-                    "messages": messages,
-                    "stream": False,
-                    "options": {"temperature": 0.85, "num_predict": 450}
-                }
-                r = await client.post(f"{backend['base_url']}/api/chat", json=payload)
-                return r.json()["message"]["content"]
+            payload = {
+                "model": backend["model"],
+                "messages": messages,
+                "stream": False,
+                "options": {"temperature": 0.85, "num_predict": 450}
+            }
+            r = await self.http_client.post(f"{backend['base_url']}/api/chat", json=payload)
+            return r.json()["message"]["content"]
     
     async def call_backend(self, backend: dict, messages: list) -> str:
         """Route call to the appropriate backend."""
