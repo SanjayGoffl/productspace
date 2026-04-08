@@ -1,0 +1,4 @@
+## 2025-01-20 - Overly Permissive CORS Configuration
+**Vulnerability:** The FastAPI application used `allow_origins=["*"]` in production.
+**Learning:** Hardcoding `["*"]` for CORS origins allows any domain to make cross-origin requests to the API, opening it to CSRF-like data leakage and unauthorized consumption. Environment variables should be used to restrict allowed origins based on the environment (e.g., local vs production).
+**Prevention:** Instead of hardcoding `["*"]`, read `ALLOWED_ORIGINS` from an environment variable and split it into a list, defaulting to `["*"]` only when the variable is unset to retain developer experience but secure production.
