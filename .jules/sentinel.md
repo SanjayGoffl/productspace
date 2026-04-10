@@ -1,0 +1,4 @@
+## 2024-05-24 - [Double-Escaping for Inline Event Handlers]
+**Vulnerability:** [XSS vulnerability in dynamically rendered elements with inline event handlers]
+**Learning:** [Browsers decode HTML entities before JavaScript execution for inline event handlers (e.g., `onclick`). A single HTML escape is insufficient. For instance, if an input is `');alert('1`, and it's HTML escaped to `&#39;);alert(&#39;1`, the browser will decode it back to the original string before evaluating it as JS in the inline handler, executing the script.]
+**Prevention:** [When embedding user input into inline JavaScript event handlers (like `onclick="doSomething('...')"`), the input must be double-escaped: first escaped for JavaScript context (e.g., `escapeJSString`), and then escaped for HTML context (e.g., `escapeHTML`). So, `escapeHTML(escapeJSString(val))` should be used.]

@@ -1688,6 +1688,22 @@
             analysisData: null
         };
 
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g,
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+
+        function escapeJSString(str) {
+            return str.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+        }
+
         /* ════════════════════════════════════════════════
            NAVIGATION
         ════════════════════════════════════════════════ */
@@ -1729,7 +1745,7 @@
         }
         function renderChips() {
             featChips.innerHTML = state.product.features.map(f =>
-                `<span class="chip">${f}<button onclick="removeFeature('${f}')">×</button></span>`
+                `<span class="chip">${escapeHTML(f)}<button onclick="removeFeature('${escapeHTML(escapeJSString(f))}')">×</button></span>`
             ).join('');
         }
 
