@@ -1,0 +1,4 @@
+## 2026-04-17 - Fix XSS in Competitor and Feature Rendering
+**Vulnerability:** XSS vulnerabilities found in the frontend rendering of product features and competitor grids within `index.html`. Unsanitized user inputs and crawler outputs were injected directly into the DOM using `innerHTML` template literals without proper HTML entity escaping.
+**Learning:** `innerHTML` is inherently unsafe when handling data derived from untrusted user inputs or external data sources (like scraped competitor details). Browsers will execute any script tags found within injected HTML content.
+**Prevention:** Always implement and use standard escaping utility functions like `escapeHTML` for textual content and `escapeJSString` for inline event handlers (like `onclick`) before interpolating variables into an `innerHTML` string.
