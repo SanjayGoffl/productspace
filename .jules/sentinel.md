@@ -1,0 +1,4 @@
+## 2024-04-24 - [Fix DOM-based XSS in index.html rendering]
+**Vulnerability:** DOM-based Cross-Site Scripting (XSS) in `index.html` where user input (features and competitors) was passed directly into `.innerHTML`.
+**Learning:** `innerHTML` inherently executes scripts when tags are present in injected variables. Even when adding variables to inline event handlers (`onclick="removeFeature('...')"`), variables must be correctly escaped to prevent quotes from ending the string attribute and triggering XSS.
+**Prevention:** Always use utility functions to escape user input before injecting into HTML structure. For DOM text content or structure use `escapeHTML()`. For string attributes injected into inline JS functions, use `escapeHTML(escapeJSString())` to prevent characters breaking out of string contexts and executing scripts.
