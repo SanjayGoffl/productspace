@@ -313,9 +313,15 @@ orchestrator = LLMOrchestrator()
 # ─── FastAPI App ──────────────────────────────────────────────────────────────
 app = FastAPI(title="Market Simulation Lab — TinyTroupe Edition")
 
+allowed_origins_env = os.environ.get("ALLOWED_ORIGINS")
+allowed_origins = allowed_origins_env.split(",") if allowed_origins_env else [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
