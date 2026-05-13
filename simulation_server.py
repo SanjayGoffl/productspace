@@ -313,9 +313,13 @@ orchestrator = LLMOrchestrator()
 # ─── FastAPI App ──────────────────────────────────────────────────────────────
 app = FastAPI(title="Market Simulation Lab — TinyTroupe Edition")
 
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "")
+# Security: read allowed origins from environment variable to prevent CORS wildcard vulnerabilities
+origins = [origin.strip() for origin in allowed_origins.split(",")] if allowed_origins else []
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
