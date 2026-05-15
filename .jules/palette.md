@@ -1,0 +1,3 @@
+## 2026-05-15 - ARIA Labels & Form Associations
+**Learning:** In standard HTML/JS applications without frontend frameworks, `for` attributes on labels and `aria-label`/`aria-hidden` attributes on icon-only buttons are critical for keyboard navigation and screen reader support. Dynamic rendering (like `innerHTML`) requires explicit XSS protection like `escapeHTML` and `escapeJSString` to sanitize content and ensure robustness.
+**Action:** Always ensure any dynamically rendered interactive element uses strict HTML/JS string escaping to prevent XSS issues while properly associating `for` labels and `aria-label`s.
