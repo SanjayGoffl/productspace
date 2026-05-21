@@ -401,12 +401,6 @@ class LLMChat:
             # Set up typing for the output
             if current_output_type is not None:
 
-                # TODO obsolete?
-                #
-                ## Add type coercion instructions if not already added
-                # if not any(msg.get("content", "").startswith("In your response, you **MUST** provide a value")
-                #          for msg in self.messages if msg.get("role") == "system"):
-
                 # the user can override the response format by specifying it in the model_params, otherwise
                 # we will use the default response format
                 if (
@@ -1057,12 +1051,6 @@ def llm(
                 # if there's a parameter named "self" in the function signature, remove it from args
                 if "self" in sig.parameters:
                     args = args[1:]
-
-                # TODO obsolete?
-                #
-                # if we are relying on parameters, they must be named
-                # if len(args) > 0:
-                #    raise ValueError("Positional arguments are not allowed in LLM-based functions whose body does not return a string.")
 
                 user_prompt = f"Execute the above computation as best as you can using the following input parameter values and respecting the output format defined by the computation specification. Produce the requested output even if it is very long.\n"
                 user_prompt += (
