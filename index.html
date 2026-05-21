@@ -1680,6 +1680,29 @@
 
     <script>
         /* ════════════════════════════════════════════════
+           UTILITIES
+        ════════════════════════════════════════════════ */
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function escapeJSString(str) {
+            if (typeof str !== 'string') return str;
+            return str
+                .replace(/\\/g, '\\\\')
+                .replace(/"/g, '\\"')
+                .replace(/'/g, "\\'")
+                .replace(/\n/g, '\\n')
+                .replace(/\r/g, '\\r');
+        }
+
+        /* ════════════════════════════════════════════════
            STATE
         ════════════════════════════════════════════════ */
         const state = {
@@ -1729,7 +1752,7 @@
         }
         function renderChips() {
             featChips.innerHTML = state.product.features.map(f =>
-                `<span class="chip">${f}<button onclick="removeFeature('${f}')">×</button></span>`
+                `<span class="chip">${escapeHTML(f)}<button onclick="removeFeature('${escapeHTML(escapeJSString(f))}')">×</button></span>`
             ).join('');
         }
 
