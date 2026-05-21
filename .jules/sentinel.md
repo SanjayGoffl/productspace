@@ -1,0 +1,4 @@
+## 2024-05-18 - [Fix XSS Vulnerabilities in ProductScope]
+**Vulnerability:** Found multiple XSS vulnerabilities in `index.html` where user input (features) and external data (competitor names, domains, prices) were dynamically injected into the DOM using `.innerHTML` without escaping.
+**Learning:** `innerHTML` shouldn't be used to inject untrusted strings, even when constructing dynamic HTML strings in Vanilla JS. Inline event handlers like `onclick="removeFeature('user-input')"` are particularly risky as escaping might break the JS string execution context.
+**Prevention:** Always use a helper function like `escapeHTML` to sanitize raw strings before injecting them into `.innerHTML`. Avoid passing dynamic strings into inline event handlers, and instead use object/array indexes (`onclick="removeFeature(0)"`).
