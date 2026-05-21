@@ -1,0 +1,4 @@
+## 2026-05-09 - Fix Overly Permissive CORS Configuration
+**Vulnerability:** The FastAPI backend in `simulation_server.py` used `allow_origins=["*"]` in its CORS configuration. This wildcard policy allows any origin to make cross-origin requests to the server, potentially exposing it to Cross-Site Request Forgery (CSRF) and allowing unauthorized sites to interact with the API on behalf of authenticated users (if any authentication was added later).
+**Learning:** The previous implementation sacrificed security for ease of development by using a wildcard. This is a common pattern in early development but should never reach production.
+**Prevention:** Always restrict `allow_origins` to specific domains. For this app, configure CORS using an environment variable (`ALLOWED_ORIGINS`) while falling back to safe local development defaults (`http://localhost:8080`, `http://127.0.0.1:8080`).
