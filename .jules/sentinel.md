@@ -1,0 +1,4 @@
+## 2024-05-18 - Overly Permissive CORS Configuration
+**Vulnerability:** The FastAPI backend (`simulation_server.py`) was configured with `allow_origins=["*"]`, which is overly permissive and allows any domain to access the API.
+**Learning:** This is a common oversight during development that can lead to Cross-Origin Resource Sharing (CORS) vulnerabilities in production, potentially allowing malicious sites to access sensitive data or perform unauthorized actions. The memory mentioned that it's configurable via `ALLOWED_ORIGINS`.
+**Prevention:** Always configure CORS securely, restricting allowed origins to trusted domains only. Use environment variables to manage environment-specific configurations (like `ALLOWED_ORIGINS`).
