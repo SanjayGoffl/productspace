@@ -1,0 +1,4 @@
+## 2024-05-14 - Prevent XSS with escapeHTML in Frontend
+**Vulnerability:** The `index.html` frontend renders AI responses and user features directly via `innerHTML` and `onclick` inline handlers without escaping, leading to Cross-Site Scripting (XSS).
+**Learning:** `innerHTML` executes script tags or allows malicious payloads if double quotes/single quotes are injected in inline handlers (`onclick`), especially for user inputs (`state.product.features`) and AI responses (`appendChatMsg`). Browsers decode HTML entities before JavaScript execution in inline handlers, so we need double escaping (`escapeHTML(escapeJSString(val))`).
+**Prevention:** Always use a utility like `escapeHTML` for raw text and combine it with `escapeJSString` for inline event handler string literals to properly sanitize user and AI-generated outputs before rendering them to the DOM.
