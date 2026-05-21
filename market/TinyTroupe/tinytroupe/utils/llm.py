@@ -21,6 +21,14 @@ from tinytroupe.utils.rendering import break_text_at_length
 ################################################################################
 
 
+@functools.lru_cache(maxsize=128)
+def read_file_cached(file_path: str) -> str:
+    """
+    Reads a file and caches the result.
+    """
+    with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+        return f.read()
+
 def compose_initial_LLM_messages_with_templates(
     system_template_name: str,
     user_template_name: str = None,
@@ -54,9 +62,7 @@ def compose_initial_LLM_messages_with_templates(
         {
             "role": "system",
             "content": chevron.render(
-                open(
-                    system_prompt_template_path, "r", encoding="utf-8", errors="replace"
-                ).read(),
+                read_file_cached(system_prompt_template_path),
                 rendering_configs,
             ),
         }
@@ -68,12 +74,7 @@ def compose_initial_LLM_messages_with_templates(
             {
                 "role": "user",
                 "content": chevron.render(
-                    open(
-                        user_prompt_template_path,
-                        "r",
-                        encoding="utf-8",
-                        errors="replace",
-                    ).read(),
+                    read_file_cached(user_prompt_template_path),
                     rendering_configs,
                 ),
             }
@@ -229,7 +230,7 @@ class LLMChat:
         template_path = os.path.join(base_template_folder, template_name)
 
         return chevron.render(
-            open(template_path, "r", encoding="utf-8", errors="replace").read(),
+            read_file_cached(template_path),
             rendering_configs,
         )
 
@@ -1305,15 +1306,11 @@ def add_rai_template_variables_if_enabled(template_variables: dict) -> dict:
     )
 
     # Harmful content
-    with open(
+    rai_harmful_content_prevention_content = read_file_cached(
         os.path.join(
             os.path.dirname(__file__), "prompts/rai_harmful_content_prevention.md"
-        ),
-        "r",
-        encoding="utf-8",
-        errors="replace",
-    ) as f:
-        rai_harmful_content_prevention_content = f.read()
+        )
+    )
 
     template_variables["rai_harmful_content_prevention"] = (
         rai_harmful_content_prevention_content
@@ -1322,16 +1319,12 @@ def add_rai_template_variables_if_enabled(template_variables: dict) -> dict:
     )
 
     # Copyright infringement
-    with open(
+    rai_copyright_infringement_prevention_content = read_file_cached(
         os.path.join(
             os.path.dirname(__file__),
             "prompts/rai_copyright_infringement_prevention.md",
-        ),
-        "r",
-        encoding="utf-8",
-        errors="replace",
-    ) as f:
-        rai_copyright_infringement_prevention_content = f.read()
+        )
+    )
 
     template_variables["rai_copyright_infringement_prevention"] = (
         rai_copyright_infringement_prevention_content
