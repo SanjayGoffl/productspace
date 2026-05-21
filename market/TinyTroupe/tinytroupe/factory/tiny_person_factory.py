@@ -561,7 +561,6 @@ class TinyPersonFactory(TinyFactory):
 
         return people
 
-    # TODO still make this one available?
     @transactional()
     def _generate_people_sequentially(
         self,
