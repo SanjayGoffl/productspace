@@ -63,60 +63,6 @@ class TinyPersonFactory(TinyFactory):
         )  # keep track of the generated persons. We keep the minibio to avoid generating the same person twice.
         self.generated_names = []
 
-    # TODO obsolete?
-    @staticmethod
-    def generate_person_factories(number_of_factories, generic_context_text):
-        """
-        Generate a list of TinyPersonFactory instances using OpenAI's LLM.
-
-        Args:
-            number_of_factories (int): The number of TinyPersonFactory instances to generate.
-            generic_context_text (str): The generic context text used to generate the TinyPersonFactory instances.
-
-        Returns:
-            list: A list of TinyPersonFactory instances.
-        """
-
-        logger.info(
-            f"Starting the generation of the {number_of_factories} person factories based on that context: {generic_context_text}"
-        )
-
-        system_prompt = open(
-            os.path.join(
-                os.path.dirname(__file__), "prompts/generate_person_factory.md"
-            ),
-            "r",
-            encoding="utf-8",
-            errors="replace",
-        ).read()
-
-        messages = []
-        messages.append({"role": "system", "content": system_prompt})
-
-        user_prompt = chevron.render(
-            "Please, create {{number_of_factories}} person descriptions based on the following broad context: {{context}}",
-            {
-                "number_of_factories": number_of_factories,
-                "context": generic_context_text,
-            },
-        )
-
-        messages.append({"role": "user", "content": user_prompt})
-
-        response = client().send_message(messages)
-
-        if response is not None:
-            result = utils.extract_json(response["content"])
-
-            factories = []
-            for i in range(number_of_factories):
-                logger.debug(f"Generating person factory with description: {result[i]}")
-                factories.append(TinyPersonFactory(result[i]))
-
-            return factories
-
-        return None
-
     @staticmethod
     def create_factory_from_demography(
         demography_description_or_file_path: Union[str, dict],
