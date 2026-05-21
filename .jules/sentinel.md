@@ -1,0 +1,4 @@
+## 2024-05-16 - Overly Permissive CORS Configuration
+**Vulnerability:** The FastAPI application used a wildcard `*` for `allow_origins` in its CORS middleware configuration, effectively allowing any origin to access its APIs.
+**Learning:** Hardcoding `["*"]` in CORS settings exposes APIs to Cross-Origin Resource Sharing vulnerabilities, allowing malicious websites to make authenticated requests on behalf of users or access sensitive endpoints.
+**Prevention:** Avoid wildcards for `allow_origins`. Instead, parse allowed origins from environment variables (`ALLOWED_ORIGINS`) and provide secure defaults tailored for the environment (like `localhost` for local dev) to ensure explicit whitelisting.
