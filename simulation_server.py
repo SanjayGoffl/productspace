@@ -142,6 +142,8 @@ class LLMOrchestrator:
     
     def _assign_backend(self, persona_idx: int) -> dict:
         """Round-robin backend assignment weighted by capacity."""
+        if not self.backends:
+            raise ValueError("No LLM backends available.")
         # Filter out unavailable backends
         available = [b for b in self.backends if b.get("name") != "Ollama" or b.get("available", True)]
         if not available:
