@@ -61,6 +61,7 @@ class LLMOrchestrator:
     
     def __init__(self):
         self.backends = []
+        self._gemini_models_cache = {}
         self._init_backends()
     
     def _init_backends(self):
@@ -162,6 +163,12 @@ class LLMOrchestrator:
     async def _call_gemini(self, backend: dict, messages: list) -> str:
         """Call Gemini API."""
         import google.generativeai as genai
+
+        model_name = backend["model"]
+        if model_name not in self._gemini_models_cache:
+            self._gemini_models_cache[model_name] = genai.GenerativeModel(model_name)
+        model = self._gemini_models_cache[model_name]
+
         async with backend["semaphore"]:
             loop = asyncio.get_event_loop()
             
@@ -170,7 +177,6 @@ class LLMOrchestrator:
                 for m in messages:
                     role = "user" if m["role"] in ["user","system"] else "model"
                     gemini_msgs.append({"role": role, "parts": [m["content"]]})
-                model = genai.GenerativeModel(backend["model"])
                 response = model.generate_content(gemini_msgs)
                 return response.text
             
