@@ -1,0 +1,4 @@
+## 2024-04-19 - XSS Vulnerability in Frontend Rendering
+**Vulnerability:** User input and AI responses (like product features and competitor names) were being rendered directly into the DOM using `innerHTML` without prior sanitization, creating Cross-Site Scripting (XSS) risks.
+**Learning:** This application dynamically creates HTML elements from un-sanitized strings inside map functions. Furthermore, data is passed to inline event handlers (like `onclick="removeFeature('...')"`). For these handlers, standard HTML escaping isn't enough; strings must be JS-escaped first, then HTML-escaped, because browsers decode HTML entities before executing the inline JavaScript.
+**Prevention:** Implement and use robust string escaping functions (`escapeHTML` and `escapeJSString`). Ensure that all dynamic data injected via `innerHTML` is properly HTML escaped, and data going into inline event handlers is double-escaped: `escapeHTML(escapeJSString(val))`.
