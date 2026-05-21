@@ -1680,6 +1680,30 @@
 
     <script>
         /* ════════════════════════════════════════════════
+           SECURITY UTILITIES
+        ════════════════════════════════════════════════ */
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function escapeJSString(str) {
+            if (typeof str !== 'string') return str;
+            return str
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(/"/g, '\\"')
+                .replace(/\n/g, '\\n')
+                .replace(/\r/g, '\\r')
+                .replace(/\t/g, '\\t');
+        }
+
+        /* ════════════════════════════════════════════════
            STATE
         ════════════════════════════════════════════════ */
         const state = {
@@ -1728,9 +1752,11 @@
             renderChips();
         }
         function renderChips() {
-            featChips.innerHTML = state.product.features.map(f =>
-                `<span class="chip">${f}<button onclick="removeFeature('${f}')">×</button></span>`
-            ).join('');
+            featChips.innerHTML = state.product.features.map(f => {
+                const safeHTML = escapeHTML(f);
+                const safeJS = escapeHTML(escapeJSString(f));
+                return `<span class="chip">${safeHTML}<button onclick="removeFeature('${safeJS}')">×</button></span>`;
+            }).join('');
         }
 
         featInput.addEventListener('keydown', e => {
@@ -2583,7 +2609,9 @@ Think step-by-step before writing the JSON output.`;
             const div = document.createElement('div');
             div.className = `msg ${role}`;
             if (role === 'ai') {
-                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${model || activeLLM}</div>${text.replace(/\n/g, '<br>')}`;
+                const safeModel = escapeHTML(model || activeLLM);
+                const safeText = escapeHTML(text).replace(/\n/g, '<br>');
+                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${safeModel}</div>${safeText}`;
             } else {
                 div.textContent = text;
             }
