@@ -23,9 +23,12 @@ class BeautifulSoupCrawler:
         self.counter = 0
 
     def is_valid_url(self, url):
-        # Check if the URL belongs to the allowed domains
+        # Check if the URL belongs to the allowed domains securely
         parsed_url = urlparse(url)
-        return any(parsed_url.netloc.endswith(domain) for domain in self.allowed_domains)
+        return any(
+            parsed_url.netloc == domain or parsed_url.netloc.endswith("." + domain)
+            for domain in self.allowed_domains
+        )
 
     def extract_links(self, url):
         try:
