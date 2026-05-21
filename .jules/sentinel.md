@@ -1,0 +1,4 @@
+## 2024-05-13 - Overly Permissive CORS Policy in FastAPI Simulation Server
+**Vulnerability:** The `simulation_server.py` FastAPI application was configured with an overly permissive CORS policy, setting `allow_origins=["*"]`. This allowed any external site to make cross-origin requests to the API, potentially leading to unauthorized data access or CSRF-like attacks if sensitive actions were exposed.
+**Learning:** The codebase relies on the `ALLOWED_ORIGINS` environment variable to securely manage cross-origin requests, but this configuration was bypassed in favor of a wildcard in the main server setup.
+**Prevention:** Always verify that CORS configurations in FastAPI use the intended environment variables (e.g., `ALLOWED_ORIGINS`) and parse them correctly into a list of specific allowed origins, avoiding wildcard (`*`) usage in production environments.
