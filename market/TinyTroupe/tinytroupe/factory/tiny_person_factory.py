@@ -561,7 +561,6 @@ class TinyPersonFactory(TinyFactory):
 
         return people
 
-    # TODO still make this one available?
     @transactional()
     def _generate_people_sequentially(
         self,
@@ -585,12 +584,12 @@ class TinyPersonFactory(TinyFactory):
             )
             if person is not None:
                 people.append(person)
-            info_msg = f"Generated person {i+1}/{number_of_people}: {person.minibio()}"
-            logger.info(info_msg)
-            if verbose:
-                print(info_msg)
+                info_msg = f"Generated person {i+1}/{number_of_people}: {person.minibio()}"
+                logger.info(info_msg)
+                if verbose:
+                    print(info_msg)
             else:
-                logger.error(f"Could not generate person {i+1}/{number_of_people}.")
+                logger.error(f"Could not generate person {i+1}/{number_of_people}. Continuing with the remaining ones.")
 
         return people
 
