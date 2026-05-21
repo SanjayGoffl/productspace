@@ -168,18 +168,6 @@ class ActionGenerator(JsonSerializableRegistry):
             previous_llm_content=None,
         )
 
-        # TODO obsolete?
-        #
-        # If model returned multi-action payload, we will score based on the first action
-        # def pick_reference_action_for_scoring(tentative_action_or_actions):
-        #    if (
-        #        isinstance(tentative_action_or_actions, list)
-        #        and tentative_action_or_actions
-        #    ):
-        #        # Prefer first action
-        #        return tentative_action_or_actions[0]
-        #    return tentative_action_or_actions
-
         def remove_done_actions(tentative_action_or_actions):
             if isinstance(tentative_action_or_actions, list):
                 return [
@@ -190,7 +178,7 @@ class ActionGenerator(JsonSerializableRegistry):
             return tentative_action_or_actions
 
         tentative_action_for_quality = remove_done_actions(
-            tentative  # TODO remove pick_reference_action_for_scoring(tentative)
+            tentative
         )
 
         if self.enable_quality_checks:
@@ -230,7 +218,7 @@ class ActionGenerator(JsonSerializableRegistry):
 
                     tentative_action_for_quality = remove_done_actions(
                         tentative
-                    )  # TODO remove pick_reference_action_for_scoring(tentative)
+                    )
 
                     good_quality, total_score, cur_feedback_single = (
                         self._check_action_quality(
@@ -256,7 +244,7 @@ class ActionGenerator(JsonSerializableRegistry):
                     # Only meaningful for single action, so pick the last action for correction
                     last_action = remove_done_actions(
                         tentative
-                    )  # TODO remove pick_reference_action_for_scoring(tentative)
+                    )
                     corrected_action, role, content = self._correct_action(
                         last_action,
                         feedback=cur_feedback,

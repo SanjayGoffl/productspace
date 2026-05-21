@@ -63,7 +63,6 @@ class TinyPersonFactory(TinyFactory):
         )  # keep track of the generated persons. We keep the minibio to avoid generating the same person twice.
         self.generated_names = []
 
-    # TODO obsolete?
     @staticmethod
     def generate_person_factories(number_of_factories, generic_context_text):
         """
