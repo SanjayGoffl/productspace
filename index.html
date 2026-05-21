@@ -1680,6 +1680,19 @@
 
     <script>
         /* ════════════════════════════════════════════════
+           SECURITY UTILS
+        ════════════════════════════════════════════════ */
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        /* ════════════════════════════════════════════════
            STATE
         ════════════════════════════════════════════════ */
         const state = {
@@ -1728,9 +1741,11 @@
             renderChips();
         }
         function renderChips() {
-            featChips.innerHTML = state.product.features.map(f =>
-                `<span class="chip">${f}<button onclick="removeFeature('${f}')">×</button></span>`
-            ).join('');
+            featChips.innerHTML = state.product.features.map(f => {
+                const safeFeat = escapeHTML(f);
+                const safeJsString = escapeHTML(f.replace(/\\/g, '\\\\').replace(/'/g, '\\\''));
+                return `<span class="chip">${safeFeat}<button onclick="removeFeature('${safeJsString}')">×</button></span>`;
+            }).join('');
         }
 
         featInput.addEventListener('keydown', e => {
@@ -1980,18 +1995,23 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
 
         function renderCompetitorGrid() {
             const grid = document.getElementById('comp-grid');
-            grid.innerHTML = state.competitors.map((c, i) => `
+            grid.innerHTML = state.competitors.map((c, i) => {
+                const safeName = escapeHTML(c.name);
+                const safeDomain = escapeHTML(c.domain);
+                const safePrice = c.price ? escapeHTML(String(c.price)) : '';
+                return `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
-      ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
+      <div class="comp-name">${safeName}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${safeDomain}</div>
+      ${c.price ? `<span class="badge badge-yellow">$${safePrice}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
         Include in analysis
       </label>
     </div>
-  `).join('');
+  `;
+            }).join('');
         }
 
         function toggleCompetitor(i, val) {
