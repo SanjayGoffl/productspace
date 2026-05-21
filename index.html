@@ -1679,6 +1679,22 @@
     <div id="toast"></div>
 
     <script>
+
+        function escapeHTML(str) {
+            return String(str).replace(/[&<>'"]/g,
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag])
+            );
+        }
+
+        function escapeJSString(str) {
+            return String(str).replace(/[\\`\'\"]/g, '\\$&').replace(/\n/g, '\\n');
+        }
         /* ════════════════════════════════════════════════
            STATE
         ════════════════════════════════════════════════ */
@@ -1729,7 +1745,7 @@
         }
         function renderChips() {
             featChips.innerHTML = state.product.features.map(f =>
-                `<span class="chip">${f}<button onclick="removeFeature('${f}')">×</button></span>`
+                `<span class="chip">${escapeHTML(f)}<button onclick="removeFeature('${escapeHTML(escapeJSString(f))}')">×</button></span>`
             ).join('');
         }
 
@@ -1971,7 +1987,7 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
                         })
                         .catch(err => {
                             document.getElementById('comp-grid').innerHTML =
-                                `<div style="color:var(--red);padding:.5rem;"><i class='fa-solid fa-triangle-exclamation'></i> ${err.message} — add competitors manually below.</div>`;
+                                `<div style="color:var(--red);padding:.5rem;"><i class='fa-solid fa-triangle-exclamation'></i> ${escapeHTML(err.message)} — add competitors manually below.</div>`;
                             document.getElementById('discovery-status').textContent = 'Auto-discovery failed. Add manually.';
                         });
                 });
@@ -1983,9 +1999,9 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
-      ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
+      <div class="comp-name">${escapeHTML(c.name)}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${escapeHTML(c.domain)}</div>
+      ${c.price ? `<span class="badge badge-yellow">$${escapeHTML(String(c.price))}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
         Include in analysis
@@ -2190,7 +2206,7 @@ Think step-by-step before writing the JSON output.`;
             // Build table header
             const hdr = document.getElementById('matrix-header');
             hdr.innerHTML = `<th>Category</th><th>Feature</th>` +
-                matrix.map(p => `<th class="${p.isOurs ? 'col-ours' : ''}">${p.isOurs ? '⭐ ' : ''}${p.name}</th>`).join('');
+                matrix.map(p => `<th class="${p.isOurs ? 'col-ours' : ''}">${p.isOurs ? '⭐ ' : ''}${escapeHTML(p.name)}</th>`).join('');
 
             // Build table body
             const tbody = document.getElementById('matrix-body');
@@ -2366,7 +2382,7 @@ Think step-by-step before writing the JSON output.`;
                 `Your product covers ${coverage} % of all tracked features compared to an average competitor coverage of ${Math.round(avgComp / features.length * 100)} %.`,
                 `${comps.filter(c => c.features.filter(f => f !== 'no').length < ourCount).length} out of ${comps.length} competitors have fewer features than your product.`
             ];
-            document.getElementById('summary-list').innerHTML = bullets.map(b => `< li > ${b}</li > `).join('');
+            document.getElementById('summary-list').innerHTML = bullets.map(b => `<li>${escapeHTML(b)}</li>`).join('');
 
             // Overview table
             const tbody2 = document.getElementById('overview-body');
@@ -2374,8 +2390,8 @@ Think step-by-step before writing the JSON output.`;
                 const cnt = c.features.filter(f => f !== 'no').length;
                 const cov = Math.round(cnt / features.length * 100);
                 const diff = c.price && state.product.price ? (c.price - state.product.price) : null;
-                const diffStr = diff === null ? '—' : diff > 0 ? `< span class= "yes" > $${diff} cheaper ours</span > ` : diff < 0 ? ` < span class= "no" > $${Math.abs(diff)} more expensive</span > ` : '<span class="badge badge-yellow">Same</span>';
-                return `< tr ><td><strong>${c.name}</strong></td><td>${c.price ? '$' + c.price : '—'}</td><td>${cnt}</td><td>${cov}%</td><td>${diffStr}</td></tr > `;
+                const diffStr = diff === null ? '—' : diff > 0 ? `<span class="yes">$${diff} cheaper ours</span>` : diff < 0 ? `<span class="no">$${Math.abs(diff)} more expensive</span>` : '<span class="badge badge-yellow">Same</span>';
+                return `<tr><td><strong>${escapeHTML(c.name)}</strong></td><td>${c.price ? '$' + escapeHTML(String(c.price)) : '—'}</td><td>${cnt}</td><td>${cov}%</td><td>${diffStr}</td></tr>`;
             }).join('');
         }
 
@@ -2463,7 +2479,7 @@ Think step-by-step before writing the JSON output.`;
             const scans = loadHistory();
             const list = document.getElementById('history-list');
             if (scans.length === 0) {
-                list.innerHTML = `< div class="hist-empty" > <i class="fa-solid fa-box-open" style="font-size:2rem;margin-bottom:.5rem;display:block;"></i>No saved scans yet.< br > Complete an analysis to save it here.</div > `;
+                list.innerHTML = `<div class="hist-empty"><i class="fa-solid fa-box-open" style="font-size:2rem;margin-bottom:.5rem;display:block;"></i>No saved scans yet.<br>Complete an analysis to save it here.</div>`;
                 return;
             }
             list.innerHTML = scans.map(s => {
@@ -2532,15 +2548,15 @@ Think step-by-step before writing the JSON output.`;
             const scans = loadHistory();
             const list = document.getElementById('ctx-list');
             if (scans.length === 0) {
-                list.innerHTML = `< div style = "color:var(--text-secondary);font-size:.76rem;" > No history yet.Run an analysis first.</div > `;
+                list.innerHTML = `<div style="color:var(--text-secondary);font-size:.76rem;">No history yet. Run an analysis first.</div>`;
                 return;
             }
             list.innerHTML = scans.map(s => {
                 const dt = new Date(s.timestamp).toLocaleDateString();
-                return `< label class="ctx-item" >
-                    <input type="checkbox" class="ctx-chk" data-id="${s.id}" checked />
-                    <span>${s.product.name} <span style="color:var(--text-secondary);">(${dt})</span></span>
-                </label > `;
+                return `<label class="ctx-item">
+                    <input type="checkbox" class="ctx-chk" data-id="${escapeHTML(s.id)}" checked />
+                    <span>${escapeHTML(s.product.name)} <span style="color:var(--text-secondary);">(${escapeHTML(dt)})</span></span>
+                </label>`;
             }).join('');
         }
 
@@ -2583,7 +2599,7 @@ Think step-by-step before writing the JSON output.`;
             const div = document.createElement('div');
             div.className = `msg ${role}`;
             if (role === 'ai') {
-                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${model || activeLLM}</div>${text.replace(/\n/g, '<br>')}`;
+                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${escapeHTML(model || activeLLM)}</div>${escapeHTML(text).replace(/\n/g, '<br>')}`;
             } else {
                 div.textContent = text;
             }
@@ -2873,10 +2889,10 @@ Think step-by-step before writing the JSON output.`;
             const share = summary.market_share?.[winner] || 0;
             const total = summary.total_simulated || 0;
             document.getElementById('sim-kpi-strip').innerHTML = `
-                <div class="kpi"><div class="label">Personas Simulated</div><div class="val blue">${total}</div></div>
-                <div class="kpi"><div class="label">Market Winner</div><div class="val green" style="font-size:1.1rem;margin-top:.3rem">${winner}</div></div>
-                <div class="kpi"><div class="label">Winner's Market Share</div><div class="val yellow">${share}%</div></div>
-                <div class="kpi"><div class="label">Products Evaluated</div><div class="val purple">${Object.keys(summary.product_votes || {}).length}</div></div>
+                <div class="kpi"><div class="label">Personas Simulated</div><div class="val blue">${escapeHTML(String(total))}</div></div>
+                <div class="kpi"><div class="label">Market Winner</div><div class="val green" style="font-size:1.1rem;margin-top:.3rem">${escapeHTML(winner)}</div></div>
+                <div class="kpi"><div class="label">Winner's Market Share</div><div class="val yellow">${escapeHTML(String(share))}%</div></div>
+                <div class="kpi"><div class="label">Products Evaluated</div><div class="val purple">${escapeHTML(String(Object.keys(summary.product_votes || {}).length))}</div></div>
             `;
 
             // Charts
@@ -2943,9 +2959,9 @@ Think step-by-step before writing the JSON output.`;
                         : '<span class="badge" style="background:rgba(239,68,68,.2);color:var(--red)">Low</span>';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><span class="tbl-emoji">${row.emoji || '👤'}</span> ${row.persona}</td>
-                    <td>${row.chosen}</td>
-                    <td>${prob}%</td>
+                    <td><span class="tbl-emoji">${escapeHTML(row.emoji || '👤')}</span> ${escapeHTML(row.persona)}</td>
+                    <td>${escapeHTML(row.chosen)}</td>
+                    <td>${escapeHTML(String(prob))}%</td>
                     <td>${label}</td>
                 `;
                 tbody.appendChild(tr);
