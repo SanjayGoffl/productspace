@@ -113,7 +113,7 @@ class TinyWorld:
             should_apply_intervention = intervention.check_precondition()
             if should_apply_intervention:
                 if TinyWorld.communication_display:
-                    self._display_intervention_communication(intervention)
+                    self._push_and_display_intervention(intervention)
                 intervention.apply_effect()
 
                 logger.debug(
@@ -230,7 +230,7 @@ class TinyWorld:
             )
 
             if TinyWorld.communication_display:
-                self._display_step_communication(
+                self._push_and_display_step(
                     cur_step=i + 1,
                     total_steps=steps,
                     timedelta_per_step=timedelta_per_step,
@@ -659,8 +659,7 @@ class TinyWorld:
     # Formatting conveniences
     ###########################################################
 
-    # TODO better names for these "display" methods
-    def _display_step_communication(
+    def _push_and_display_step(
         self, cur_step, total_steps, timedelta_per_step=None
     ):
         """
@@ -682,7 +681,7 @@ class TinyWorld:
             }
         )
 
-    def _display_intervention_communication(self, intervention):
+    def _push_and_display_intervention(self, intervention):
         """
         Displays the current intervention communication and stores it in a buffer for later use.
         """
