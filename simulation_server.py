@@ -61,6 +61,7 @@ class LLMOrchestrator:
     
     def __init__(self):
         self.backends = []
+        self._gemini_models = {}
         self._init_backends()
     
     def _init_backends(self):
@@ -170,7 +171,12 @@ class LLMOrchestrator:
                 for m in messages:
                     role = "user" if m["role"] in ["user","system"] else "model"
                     gemini_msgs.append({"role": role, "parts": [m["content"]]})
-                model = genai.GenerativeModel(backend["model"])
+
+                model_name = backend["model"]
+                if model_name not in self._gemini_models:
+                    self._gemini_models[model_name] = genai.GenerativeModel(model_name)
+                model = self._gemini_models[model_name]
+
                 response = model.generate_content(gemini_msgs)
                 return response.text
             
