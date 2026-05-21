@@ -1,0 +1,4 @@
+## 2026-05-20 - Fix overly permissive CORS configuration
+**Vulnerability:** The FastAPI server used `allow_origins=["*"]` in its `CORSMiddleware`, which allows any origin to make requests to the API. This could lead to cross-origin resource sharing (CORS) related vulnerabilities, potentially allowing malicious websites to interact with the API on behalf of users.
+**Learning:** Overly permissive CORS configurations are a common oversight, especially in development setups that are not updated for production. The wildcard `*` should not be used for allowed origins.
+**Prevention:** Instead of hardcoding `["*"]`, use an environment variable (e.g., `ALLOWED_ORIGINS`) to define allowed origins, and provide safe defaults (like `localhost` for local development). This approach ensures security while maintaining flexibility for deployment in different environments.
