@@ -1994,7 +1994,7 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
                         })
                         .catch(err => {
                             document.getElementById('comp-grid').innerHTML =
-                                `<div style="color:var(--red);padding:.5rem;"><i class='fa-solid fa-triangle-exclamation'></i> ${err.message} — add competitors manually below.</div>`;
+                                `<div style="color:var(--red);padding:.5rem;"><i class='fa-solid fa-triangle-exclamation'></i> ${escapeHTML(err.message)} — add competitors manually below.</div>`;
                             document.getElementById('discovery-status').textContent = 'Auto-discovery failed. Add manually.';
                         });
                 });
@@ -2006,9 +2006,9 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
-      ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
+      <div class="comp-name">${escapeHTML(c.name)}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${escapeHTML(c.domain)}</div>
+      ${c.price ? `<span class="badge badge-yellow">$${escapeHTML(c.price)}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
         Include in analysis
@@ -2213,7 +2213,7 @@ Think step-by-step before writing the JSON output.`;
             // Build table header
             const hdr = document.getElementById('matrix-header');
             hdr.innerHTML = `<th>Category</th><th>Feature</th>` +
-                matrix.map(p => `<th class="${p.isOurs ? 'col-ours' : ''}">${p.isOurs ? '⭐ ' : ''}${p.name}</th>`).join('');
+                matrix.map(p => `<th class="${p.isOurs ? 'col-ours' : ''}">${p.isOurs ? '⭐ ' : ''}${escapeHTML(p.name)}</th>`).join('');
 
             // Build table body
             const tbody = document.getElementById('matrix-body');
@@ -2224,7 +2224,7 @@ Think step-by-step before writing the JSON output.`;
                     const icon = v === 'yes' ? '✓' : v === 'partial' ? '≈' : '✗';
                     return `<td class="${p.isOurs ? 'col-ours' : ''} ${cls}">${icon}</td>`;
                 }).join('');
-                return `<tr><td><span class="badge badge-blue">${f.category}</span></td><td>${f.name}</td>${cells}</tr>`;
+                return `<tr><td><span class="badge badge-blue">${escapeHTML(f.category)}</span></td><td>${escapeHTML(f.name)}</td>${cells}</tr>`;
             }).join('');
 
             // Bar chart — feature count per product
@@ -2383,11 +2383,11 @@ Think step-by-step before writing the JSON output.`;
             const bottomFeature = [...freqs].sort((a, b) => a.pct - b.pct)[0];
 
             const bullets = [
-                `Among all products analyzed(including yours), the most universal features are: ${top3.map(f => `"${f.name}" (${f.pct}%)`).join(', ')}.`,
-                `The least common feature across competitors is "${bottomFeature.name}", present in only ${bottomFeature.pct} % of products.`,
-                comps.length > 0 ? `Competitor price range: $${Math.min(...priceList)} – $${Math.max(...priceList)}.Your product is priced at $${state.product.price}.` : 'No competitor pricing data available.',
-                `Your product covers ${coverage} % of all tracked features compared to an average competitor coverage of ${Math.round(avgComp / features.length * 100)} %.`,
-                `${comps.filter(c => c.features.filter(f => f !== 'no').length < ourCount).length} out of ${comps.length} competitors have fewer features than your product.`
+                `Among all products analyzed(including yours), the most universal features are: ${top3.map(f => `"${escapeHTML(f.name)}" (${escapeHTML(f.pct)}%)`).join(', ')}.`,
+                `The least common feature across competitors is "${escapeHTML(bottomFeature.name)}", present in only ${escapeHTML(bottomFeature.pct)} % of products.`,
+                comps.length > 0 ? `Competitor price range: $${Math.min(...priceList)} – $${Math.max(...priceList)}.Your product is priced at $${escapeHTML(state.product.price)}.` : 'No competitor pricing data available.',
+                `Your product covers ${escapeHTML(coverage)} % of all tracked features compared to an average competitor coverage of ${escapeHTML(Math.round(avgComp / features.length * 100))} %.`,
+                `${escapeHTML(comps.filter(c => c.features.filter(f => f !== 'no').length < ourCount).length)} out of ${escapeHTML(comps.length)} competitors have fewer features than your product.`
             ];
             document.getElementById('summary-list').innerHTML = bullets.map(b => `< li > ${b}</li > `).join('');
 
@@ -2397,8 +2397,8 @@ Think step-by-step before writing the JSON output.`;
                 const cnt = c.features.filter(f => f !== 'no').length;
                 const cov = Math.round(cnt / features.length * 100);
                 const diff = c.price && state.product.price ? (c.price - state.product.price) : null;
-                const diffStr = diff === null ? '—' : diff > 0 ? `< span class= "yes" > $${diff} cheaper ours</span > ` : diff < 0 ? ` < span class= "no" > $${Math.abs(diff)} more expensive</span > ` : '<span class="badge badge-yellow">Same</span>';
-                return `< tr ><td><strong>${c.name}</strong></td><td>${c.price ? '$' + c.price : '—'}</td><td>${cnt}</td><td>${cov}%</td><td>${diffStr}</td></tr > `;
+                const diffStr = diff === null ? '—' : diff > 0 ? `< span class= "yes" > $${escapeHTML(diff)} cheaper ours</span > ` : diff < 0 ? ` < span class= "no" > $${escapeHTML(Math.abs(diff))} more expensive</span > ` : '<span class="badge badge-yellow">Same</span>';
+                return `< tr ><td><strong>${escapeHTML(c.name)}</strong></td><td>${c.price ? '$' + escapeHTML(c.price) : '—'}</td><td>${cnt}</td><td>${cov}%</td><td>${diffStr}</td></tr > `;
             }).join('');
         }
 
@@ -2495,17 +2495,17 @@ Think step-by-step before writing the JSON output.`;
                 const compCount = s.competitors.length;
                 const featCount = s.analysisData?.features?.length || 0;
                 return `< div class="hist-card" id = "hc-${s.id}" >
-                    <button class="hist-del" onclick="deleteHistory('${s.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    <div class="h-name"><i class="fa-solid fa-box" style="color:var(--accent);margin-right:.35rem;"></i>${s.product.name}</div>
+                    <button class="hist-del" onclick="deleteHistory('${escapeHTML(escapeJSString(s.id))}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                    <div class="h-name"><i class="fa-solid fa-box" style="color:var(--accent);margin-right:.35rem;"></i>${escapeHTML(s.product.name)}</div>
                     <div class="h-meta">
-                        <span><i class="fa-solid fa-calendar-days"></i> ${dateStr}</span>
-                        <span><i class="fa-solid fa-users"></i> ${compCount} competitors</span>
-                        <span><i class="fa-solid fa-list-check"></i> ${featCount} features</span>
-                        ${s.product.price ? `<span><i class="fa-solid fa-tag"></i> $${s.product.price}</span>` : ''}
+                        <span><i class="fa-solid fa-calendar-days"></i> ${escapeHTML(dateStr)}</span>
+                        <span><i class="fa-solid fa-users"></i> ${escapeHTML(compCount)} competitors</span>
+                        <span><i class="fa-solid fa-list-check"></i> ${escapeHTML(featCount)} features</span>
+                        ${s.product.price ? `<span><i class="fa-solid fa-tag"></i> $${escapeHTML(s.product.price)}</span>` : ''}
                     </div>
                     <div class="h-actions">
-                        <button class="btn btn-outline btn-sm" onclick="loadScanIntoChat('${s.id}')"><i class="fa-solid fa-comments"></i> Chat</button>
-                        <button class="btn btn-secondary btn-sm" onclick="exportScan('${s.id}')"><i class="fa-solid fa-download"></i> Export</button>
+                        <button class="btn btn-outline btn-sm" onclick="loadScanIntoChat('${escapeHTML(escapeJSString(s.id))}')"><i class="fa-solid fa-comments"></i> Chat</button>
+                        <button class="btn btn-secondary btn-sm" onclick="exportScan('${escapeHTML(escapeJSString(s.id))}')"><i class="fa-solid fa-download"></i> Export</button>
                     </div>
                 </div > `;
             }).join('');
@@ -2561,8 +2561,8 @@ Think step-by-step before writing the JSON output.`;
             list.innerHTML = scans.map(s => {
                 const dt = new Date(s.timestamp).toLocaleDateString();
                 return `< label class="ctx-item" >
-                    <input type="checkbox" class="ctx-chk" data-id="${s.id}" checked />
-                    <span>${s.product.name} <span style="color:var(--text-secondary);">(${dt})</span></span>
+                    <input type="checkbox" class="ctx-chk" data-id="${escapeHTML(s.id)}" checked />
+                    <span>${escapeHTML(s.product.name)} <span style="color:var(--text-secondary);">(${escapeHTML(dt)})</span></span>
                 </label > `;
             }).join('');
         }
@@ -2606,7 +2606,7 @@ Think step-by-step before writing the JSON output.`;
             const div = document.createElement('div');
             div.className = `msg ${role}`;
             if (role === 'ai') {
-                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${model || activeLLM}</div>${text.replace(/\n/g, '<br>')}`;
+                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${escapeHTML(model || activeLLM)}</div>${escapeHTML(text).replace(/\n/g, '<br>')}`;
             } else {
                 div.textContent = text;
             }
@@ -2853,24 +2853,24 @@ Think step-by-step before writing the JSON output.`;
 
             const card = document.createElement('div');
             card.className = 'persona-card';
-            card.id = `pc-${data.persona_id || data.persona.replace(/\s+/g, '_')}`;
+            card.id = `pc-${escapeHTML(data.persona_id || data.persona.replace(/\s+/g, '_'))}`;
             card.innerHTML = `
-                <div class="persona-avatar">${data.emoji || '👤'}</div>
-                <div class="persona-name">${data.persona}</div>
-                <div class="persona-chosen">Chose: <span>${data.product_chosen}</span></div>
+                <div class="persona-avatar">${escapeHTML(data.emoji || '👤')}</div>
+                <div class="persona-name">${escapeHTML(data.persona)}</div>
+                <div class="persona-chosen">Chose: <span>${escapeHTML(data.product_chosen)}</span></div>
                 <div class="prob-bar-wrap">
                     <div class="prob-bar-label">
                         <span>Purchase Probability</span>
-                        <span>${prob}%</span>
+                        <span>${escapeHTML(prob)}%</span>
                     </div>
                     <div class="prob-bar-track">
-                        <div class="prob-bar-fill ${probClass}" data-width="${prob}" style="width:0%"></div>
+                        <div class="prob-bar-fill ${probClass}" data-width="${escapeHTML(prob)}" style="width:0%"></div>
                     </div>
                 </div>
                 ${topFeats.length ? `<div class="persona-features">
-                    ${topFeats.map(f => `<span class="chip">${f}</span>`).join('')}
+                    ${topFeats.map(f => `<span class="chip">${escapeHTML(f)}</span>`).join('')}
                 </div>` : ''}
-                ${data.quote ? `<div class="persona-quote">"${data.quote}"</div>` : ''}
+                ${data.quote ? `<div class="persona-quote">"${escapeHTML(data.quote)}"</div>` : ''}
             `;
             grid.appendChild(card);
 
@@ -2896,10 +2896,10 @@ Think step-by-step before writing the JSON output.`;
             const share = summary.market_share?.[winner] || 0;
             const total = summary.total_simulated || 0;
             document.getElementById('sim-kpi-strip').innerHTML = `
-                <div class="kpi"><div class="label">Personas Simulated</div><div class="val blue">${total}</div></div>
-                <div class="kpi"><div class="label">Market Winner</div><div class="val green" style="font-size:1.1rem;margin-top:.3rem">${winner}</div></div>
-                <div class="kpi"><div class="label">Winner's Market Share</div><div class="val yellow">${share}%</div></div>
-                <div class="kpi"><div class="label">Products Evaluated</div><div class="val purple">${Object.keys(summary.product_votes || {}).length}</div></div>
+                <div class="kpi"><div class="label">Personas Simulated</div><div class="val blue">${escapeHTML(total)}</div></div>
+                <div class="kpi"><div class="label">Market Winner</div><div class="val green" style="font-size:1.1rem;margin-top:.3rem">${escapeHTML(winner)}</div></div>
+                <div class="kpi"><div class="label">Winner's Market Share</div><div class="val yellow">${escapeHTML(share)}%</div></div>
+                <div class="kpi"><div class="label">Products Evaluated</div><div class="val purple">${escapeHTML(Object.keys(summary.product_votes || {}).length)}</div></div>
             `;
 
             // Charts
@@ -2966,9 +2966,9 @@ Think step-by-step before writing the JSON output.`;
                         : '<span class="badge" style="background:rgba(239,68,68,.2);color:var(--red)">Low</span>';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><span class="tbl-emoji">${row.emoji || '👤'}</span> ${row.persona}</td>
-                    <td>${row.chosen}</td>
-                    <td>${prob}%</td>
+                    <td><span class="tbl-emoji">${escapeHTML(row.emoji || '👤')}</span> ${escapeHTML(row.persona)}</td>
+                    <td>${escapeHTML(row.chosen)}</td>
+                    <td>${escapeHTML(prob)}%</td>
                     <td>${label}</td>
                 `;
                 tbody.appendChild(tr);
