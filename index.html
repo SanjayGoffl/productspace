@@ -2006,8 +2006,8 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
+      <div class="comp-name">${escapeHTML(c.name)}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${escapeHTML(c.domain)}</div>
       ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
@@ -2213,7 +2213,7 @@ Think step-by-step before writing the JSON output.`;
             // Build table header
             const hdr = document.getElementById('matrix-header');
             hdr.innerHTML = `<th>Category</th><th>Feature</th>` +
-                matrix.map(p => `<th class="${p.isOurs ? 'col-ours' : ''}">${p.isOurs ? '⭐ ' : ''}${p.name}</th>`).join('');
+                matrix.map(p => `<th class="${p.isOurs ? 'col-ours' : ''}">${p.isOurs ? '⭐ ' : ''}${escapeHTML(p.name)}</th>`).join('');
 
             // Build table body
             const tbody = document.getElementById('matrix-body');
@@ -2398,7 +2398,7 @@ Think step-by-step before writing the JSON output.`;
                 const cov = Math.round(cnt / features.length * 100);
                 const diff = c.price && state.product.price ? (c.price - state.product.price) : null;
                 const diffStr = diff === null ? '—' : diff > 0 ? `< span class= "yes" > $${diff} cheaper ours</span > ` : diff < 0 ? ` < span class= "no" > $${Math.abs(diff)} more expensive</span > ` : '<span class="badge badge-yellow">Same</span>';
-                return `< tr ><td><strong>${c.name}</strong></td><td>${c.price ? '$' + c.price : '—'}</td><td>${cnt}</td><td>${cov}%</td><td>${diffStr}</td></tr > `;
+                return `< tr ><td><strong>${escapeHTML(c.name)}</strong></td><td>${c.price ? '$' + c.price : '—'}</td><td>${cnt}</td><td>${cov}%</td><td>${diffStr}</td></tr > `;
             }).join('');
         }
 
@@ -2562,7 +2562,7 @@ Think step-by-step before writing the JSON output.`;
                 const dt = new Date(s.timestamp).toLocaleDateString();
                 return `< label class="ctx-item" >
                     <input type="checkbox" class="ctx-chk" data-id="${s.id}" checked />
-                    <span>${s.product.name} <span style="color:var(--text-secondary);">(${dt})</span></span>
+                    <span>${escapeHTML(s.product.name)} <span style="color:var(--text-secondary);">(${dt})</span></span>
                 </label > `;
             }).join('');
         }
@@ -2606,7 +2606,7 @@ Think step-by-step before writing the JSON output.`;
             const div = document.createElement('div');
             div.className = `msg ${role}`;
             if (role === 'ai') {
-                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${model || activeLLM}</div>${text.replace(/\n/g, '<br>')}`;
+                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${escapeHTML(model || activeLLM)}</div>${escapeHTML(text).replace(/\n/g, '<br>')}`;
             } else {
                 div.textContent = text;
             }
@@ -2856,8 +2856,8 @@ Think step-by-step before writing the JSON output.`;
             card.id = `pc-${data.persona_id || data.persona.replace(/\s+/g, '_')}`;
             card.innerHTML = `
                 <div class="persona-avatar">${data.emoji || '👤'}</div>
-                <div class="persona-name">${data.persona}</div>
-                <div class="persona-chosen">Chose: <span>${data.product_chosen}</span></div>
+                <div class="persona-name">${escapeHTML(data.persona)}</div>
+                <div class="persona-chosen">Chose: <span>${escapeHTML(data.product_chosen)}</span></div>
                 <div class="prob-bar-wrap">
                     <div class="prob-bar-label">
                         <span>Purchase Probability</span>
@@ -2966,8 +2966,8 @@ Think step-by-step before writing the JSON output.`;
                         : '<span class="badge" style="background:rgba(239,68,68,.2);color:var(--red)">Low</span>';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><span class="tbl-emoji">${row.emoji || '👤'}</span> ${row.persona}</td>
-                    <td>${row.chosen}</td>
+                    <td><span class="tbl-emoji">${row.emoji || '👤'}</span> ${escapeHTML(row.persona)}</td>
+                    <td>${escapeHTML(row.chosen)}</td>
                     <td>${prob}%</td>
                     <td>${label}</td>
                 `;
