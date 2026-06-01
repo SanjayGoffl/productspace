@@ -1994,7 +1994,7 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
                         })
                         .catch(err => {
                             document.getElementById('comp-grid').innerHTML =
-                                `<div style="color:var(--red);padding:.5rem;"><i class='fa-solid fa-triangle-exclamation'></i> ${err.message} — add competitors manually below.</div>`;
+                                `<div style="color:var(--red);padding:.5rem;"><i class='fa-solid fa-triangle-exclamation'></i> ${escapeHTML(err.message)} — add competitors manually below.</div>`;
                             document.getElementById('discovery-status').textContent = 'Auto-discovery failed. Add manually.';
                         });
                 });
@@ -2006,9 +2006,9 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
-      ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
+      <div class="comp-name">${escapeHTML(c.name)}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${escapeHTML(c.domain)}</div>
+      ${c.price ? `<span class="badge badge-yellow">$${escapeHTML(c.price)}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
         Include in analysis
