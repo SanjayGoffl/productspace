@@ -2006,8 +2006,8 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
+      <div class="comp-name">${escapeHTML(c.name)}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${escapeHTML(c.domain)}</div>
       ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
@@ -2496,7 +2496,7 @@ Think step-by-step before writing the JSON output.`;
                 const featCount = s.analysisData?.features?.length || 0;
                 return `< div class="hist-card" id = "hc-${s.id}" >
                     <button class="hist-del" onclick="deleteHistory('${s.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    <div class="h-name"><i class="fa-solid fa-box" style="color:var(--accent);margin-right:.35rem;"></i>${s.product.name}</div>
+                    <div class="h-name"><i class="fa-solid fa-box" style="color:var(--accent);margin-right:.35rem;"></i>${escapeHTML(s.product.name)}</div>
                     <div class="h-meta">
                         <span><i class="fa-solid fa-calendar-days"></i> ${dateStr}</span>
                         <span><i class="fa-solid fa-users"></i> ${compCount} competitors</span>
@@ -2606,7 +2606,7 @@ Think step-by-step before writing the JSON output.`;
             const div = document.createElement('div');
             div.className = `msg ${role}`;
             if (role === 'ai') {
-                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${model || activeLLM}</div>${text.replace(/\n/g, '<br>')}`;
+                div.innerHTML = `<div class="msg-model"><i class="fa-solid fa-robot"></i> ${escapeHTML(model || activeLLM)}</div>${escapeHTML(text).replace(/\n/g, '<br>')}`;
             } else {
                 div.textContent = text;
             }
