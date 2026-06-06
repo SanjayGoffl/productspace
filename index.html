@@ -2006,9 +2006,9 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
-      ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
+      <div class="comp-name">${escapeHTML(c.name)}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${escapeHTML(c.domain)}</div>
+      ${c.price ? `<span class="badge badge-yellow">$${escapeHTML(c.price)}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
         Include in analysis
@@ -2213,7 +2213,7 @@ Think step-by-step before writing the JSON output.`;
             // Build table header
             const hdr = document.getElementById('matrix-header');
             hdr.innerHTML = `<th>Category</th><th>Feature</th>` +
-                matrix.map(p => `<th class="${p.isOurs ? 'col-ours' : ''}">${p.isOurs ? '⭐ ' : ''}${p.name}</th>`).join('');
+                matrix.map(p => `<th class="${p.isOurs ? 'col-ours' : ''}">${p.isOurs ? '⭐ ' : ''}${escapeHTML(p.name)}</th>`).join('');
 
             // Build table body
             const tbody = document.getElementById('matrix-body');
@@ -2224,7 +2224,7 @@ Think step-by-step before writing the JSON output.`;
                     const icon = v === 'yes' ? '✓' : v === 'partial' ? '≈' : '✗';
                     return `<td class="${p.isOurs ? 'col-ours' : ''} ${cls}">${icon}</td>`;
                 }).join('');
-                return `<tr><td><span class="badge badge-blue">${f.category}</span></td><td>${f.name}</td>${cells}</tr>`;
+                return `<tr><td><span class="badge badge-blue">${escapeHTML(f.category)}</span></td><td>${escapeHTML(f.name)}</td>${cells}</tr>`;
             }).join('');
 
             // Bar chart — feature count per product
@@ -2855,9 +2855,9 @@ Think step-by-step before writing the JSON output.`;
             card.className = 'persona-card';
             card.id = `pc-${data.persona_id || data.persona.replace(/\s+/g, '_')}`;
             card.innerHTML = `
-                <div class="persona-avatar">${data.emoji || '👤'}</div>
-                <div class="persona-name">${data.persona}</div>
-                <div class="persona-chosen">Chose: <span>${data.product_chosen}</span></div>
+                <div class="persona-avatar">${escapeHTML(data.emoji || '👤')}</div>
+                <div class="persona-name">${escapeHTML(data.persona)}</div>
+                <div class="persona-chosen">Chose: <span>${escapeHTML(data.product_chosen)}</span></div>
                 <div class="prob-bar-wrap">
                     <div class="prob-bar-label">
                         <span>Purchase Probability</span>
@@ -2868,9 +2868,9 @@ Think step-by-step before writing the JSON output.`;
                     </div>
                 </div>
                 ${topFeats.length ? `<div class="persona-features">
-                    ${topFeats.map(f => `<span class="chip">${f}</span>`).join('')}
+                    ${topFeats.map(f => `<span class="chip">${escapeHTML(f)}</span>`).join('')}
                 </div>` : ''}
-                ${data.quote ? `<div class="persona-quote">"${data.quote}"</div>` : ''}
+                ${data.quote ? `<div class="persona-quote">"${escapeHTML(data.quote)}"</div>` : ''}
             `;
             grid.appendChild(card);
 
