@@ -1315,21 +1315,21 @@
                 <div class="card-title"><i class="fa-solid fa-cube"></i> Product Blueprint</div>
                 <div class="form-grid">
                     <div>
-                        <label>Product Name *</label>
+                        <label for="p-name">Product Name *</label>
                         <input type="text" id="p-name" placeholder="e.g. iPhone 17 Pro" />
                     </div>
                     <div class="input-prefix">
-                        <label>Target Price (USD) *</label>
+                        <label for="p-price">Target Price (USD) *</label>
                         <span>$</span>
                         <input type="number" id="p-price" placeholder="1199" min="0" step="0.01" />
                     </div>
                     <div class="form-full">
-                        <label>Short Description *</label>
+                        <label for="p-desc">Short Description *</label>
                         <textarea id="p-desc" rows="3"
                             placeholder="Describe what the product does, its target audience and primary value proposition..."></textarea>
                     </div>
                     <div class="form-full">
-                        <label>Key Features <span class="text-secondary">(press Enter or comma to add)</span></label>
+                        <label for="p-feat-input">Key Features <span class="text-secondary">(press Enter or comma to add)</span></label>
                         <input type="text" id="p-feat-input" placeholder="e.g. Periscope zoom, USB-C, A17 chip..." />
                         <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.65rem;" id="feat-chips"></div>
                     </div>
@@ -1368,15 +1368,15 @@
                 <div class="card-title"><i class="fa-solid fa-plus"></i> Add Manually</div>
                 <div class="form-grid">
                     <div>
-                        <label>Competitor Name</label>
+                        <label for="m-name">Competitor Name</label>
                         <input type="text" id="m-name" placeholder="Samsung Galaxy S24 Ultra" />
                     </div>
                     <div>
-                        <label>Domain</label>
+                        <label for="m-domain">Domain</label>
                         <input type="text" id="m-domain" placeholder="samsung.com" />
                     </div>
                     <div class="form-full">
-                        <label>Website URL</label>
+                        <label for="m-url">Website URL</label>
                         <input type="text" id="m-url"
                             placeholder="https://www.samsung.com/smartphones/galaxy-s24-ultra" />
                     </div>
@@ -1628,8 +1628,8 @@
             <i class="fa-solid fa-clock-rotate-left" style="color:var(--accent)"></i>
             <h2>Scan History</h2>
             <span id="hist-count-badge" class="badge badge-green">0 scans</span>
-            <button class="btn btn-secondary btn-sm" id="btn-close-drawer" style="margin-left:auto">
-                <i class="fa-solid fa-xmark"></i>
+            <button class="btn btn-secondary btn-sm" id="btn-close-drawer" style="margin-left:auto" aria-label="Close drawer">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
         <div id="history-list">
@@ -1640,8 +1640,8 @@
     </div>
 
     <!-- ══ CHAT FAB ══ -->
-    <button id="chat-fab" title="Chat with your history">
-        <i class="fa-solid fa-comments"></i>
+    <button id="chat-fab" title="Chat with your history" aria-label="Chat with your history">
+        <i class="fa-solid fa-comments" aria-hidden="true"></i>
         <span class="fab-badge hidden" id="fab-badge">0</span>
     </button>
 
@@ -1652,8 +1652,9 @@
             <h3>History Chat</h3>
             <span class="badge badge-blue" id="chat-model-badge" style="font-size:.65rem;">Groq Llama-3.3-70B</span>
             <button id="btn-close-chat"
-                style="margin-left:auto;background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:.9rem;">
-                <i class="fa-solid fa-xmark"></i>
+                style="margin-left:auto;background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:.9rem;"
+                aria-label="Close chat">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
         <div id="chat-ctx">
@@ -1670,7 +1671,7 @@
         </div>
         <div id="chat-input-row">
             <textarea id="chat-input" placeholder="Ask about your market data..." rows="1"></textarea>
-            <button id="chat-send"><i class="fa-solid fa-paper-plane"></i></button>
+            <button id="chat-send" aria-label="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
         </div>
     </div>
 
@@ -1752,7 +1753,7 @@
         }
         function renderChips() {
             featChips.innerHTML = state.product.features.map(f =>
-                `<span class="chip">${escapeHTML(f)}<button onclick="removeFeature('${escapeHTML(escapeJSString(f))}')">×</button></span>`
+                `<span class="chip">${escapeHTML(f)}<button aria-label="Remove feature" onclick="removeFeature('${escapeHTML(escapeJSString(f))}')">×</button></span>`
             ).join('');
         }
 
@@ -2005,7 +2006,7 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
             const grid = document.getElementById('comp-grid');
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
-      <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
+      <button class="remove-btn" aria-label="Remove competitor" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
       <div class="comp-name">${c.name}</div>
       <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
       ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
@@ -2495,7 +2496,7 @@ Think step-by-step before writing the JSON output.`;
                 const compCount = s.competitors.length;
                 const featCount = s.analysisData?.features?.length || 0;
                 return `< div class="hist-card" id = "hc-${s.id}" >
-                    <button class="hist-del" onclick="deleteHistory('${s.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                    <button class="hist-del" aria-label="Delete scan" onclick="deleteHistory('${s.id}')" title="Delete"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
                     <div class="h-name"><i class="fa-solid fa-box" style="color:var(--accent);margin-right:.35rem;"></i>${s.product.name}</div>
                     <div class="h-meta">
                         <span><i class="fa-solid fa-calendar-days"></i> ${dateStr}</span>

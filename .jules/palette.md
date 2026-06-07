@@ -1,0 +1,3 @@
+## 2026-06-07 - Accessible Forms & Icon-Only Buttons in Vanilla HTML
+**Learning:** In a vanilla HTML repository missing standard bundler or component checks, missing accessibility attributes (like `for` on labels and `aria-label`/`aria-hidden` on icon-only buttons) can proliferate. Using simple Playwright scripts works extremely well to verify these static HTML changes.
+**Action:** When working on vanilla HTML templates or components without an explicit frontend build step, always proactively scan for missing `for` attributes on forms and add `aria-label`s to any buttons relying entirely on FontAwesome icons. Use Python + Playwright for headless verification of the rendered output.
