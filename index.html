@@ -2006,9 +2006,9 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
-      ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
+      <div class="comp-name">${escapeHTML(c.name)}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${escapeHTML(c.domain)}</div>
+      ${c.price ? `<span class="badge badge-yellow">$${escapeHTML(c.price)}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
         Include in analysis
@@ -2494,18 +2494,18 @@ Think step-by-step before writing the JSON output.`;
                 const dateStr = dt.toLocaleDateString() + ' ' + dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 const compCount = s.competitors.length;
                 const featCount = s.analysisData?.features?.length || 0;
-                return `< div class="hist-card" id = "hc-${s.id}" >
-                    <button class="hist-del" onclick="deleteHistory('${s.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    <div class="h-name"><i class="fa-solid fa-box" style="color:var(--accent);margin-right:.35rem;"></i>${s.product.name}</div>
+                return `< div class="hist-card" id = "hc-${escapeHTML(s.id)}" >
+                    <button class="hist-del" onclick="deleteHistory('${escapeHTML(escapeJSString(s.id))}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                    <div class="h-name"><i class="fa-solid fa-box" style="color:var(--accent);margin-right:.35rem;"></i>${escapeHTML(s.product.name)}</div>
                     <div class="h-meta">
                         <span><i class="fa-solid fa-calendar-days"></i> ${dateStr}</span>
                         <span><i class="fa-solid fa-users"></i> ${compCount} competitors</span>
                         <span><i class="fa-solid fa-list-check"></i> ${featCount} features</span>
-                        ${s.product.price ? `<span><i class="fa-solid fa-tag"></i> $${s.product.price}</span>` : ''}
+                        ${s.product.price ? `<span><i class="fa-solid fa-tag"></i> $${escapeHTML(s.product.price)}</span>` : ''}
                     </div>
                     <div class="h-actions">
-                        <button class="btn btn-outline btn-sm" onclick="loadScanIntoChat('${s.id}')"><i class="fa-solid fa-comments"></i> Chat</button>
-                        <button class="btn btn-secondary btn-sm" onclick="exportScan('${s.id}')"><i class="fa-solid fa-download"></i> Export</button>
+                        <button class="btn btn-outline btn-sm" onclick="loadScanIntoChat('${escapeHTML(escapeJSString(s.id))}')"><i class="fa-solid fa-comments"></i> Chat</button>
+                        <button class="btn btn-secondary btn-sm" onclick="exportScan('${escapeHTML(escapeJSString(s.id))}')"><i class="fa-solid fa-download"></i> Export</button>
                     </div>
                 </div > `;
             }).join('');
@@ -2561,8 +2561,8 @@ Think step-by-step before writing the JSON output.`;
             list.innerHTML = scans.map(s => {
                 const dt = new Date(s.timestamp).toLocaleDateString();
                 return `< label class="ctx-item" >
-                    <input type="checkbox" class="ctx-chk" data-id="${s.id}" checked />
-                    <span>${s.product.name} <span style="color:var(--text-secondary);">(${dt})</span></span>
+                    <input type="checkbox" class="ctx-chk" data-id="${escapeHTML(s.id)}" checked />
+                    <span>${escapeHTML(s.product.name)} <span style="color:var(--text-secondary);">(${dt})</span></span>
                 </label > `;
             }).join('');
         }
