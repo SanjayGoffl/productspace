@@ -2853,24 +2853,24 @@ Think step-by-step before writing the JSON output.`;
 
             const card = document.createElement('div');
             card.className = 'persona-card';
-            card.id = `pc-${data.persona_id || data.persona.replace(/\s+/g, '_')}`;
+            card.id = `pc-${escapeHTML(data.persona_id || data.persona.replace(/\s+/g, '_'))}`;
             card.innerHTML = `
-                <div class="persona-avatar">${data.emoji || '👤'}</div>
-                <div class="persona-name">${data.persona}</div>
-                <div class="persona-chosen">Chose: <span>${data.product_chosen}</span></div>
+                <div class="persona-avatar">${escapeHTML(data.emoji || '👤')}</div>
+                <div class="persona-name">${escapeHTML(data.persona)}</div>
+                <div class="persona-chosen">Chose: <span>${escapeHTML(data.product_chosen)}</span></div>
                 <div class="prob-bar-wrap">
                     <div class="prob-bar-label">
                         <span>Purchase Probability</span>
-                        <span>${prob}%</span>
+                        <span>${escapeHTML(prob)}%</span>
                     </div>
                     <div class="prob-bar-track">
-                        <div class="prob-bar-fill ${probClass}" data-width="${prob}" style="width:0%"></div>
+                        <div class="prob-bar-fill ${probClass}" data-width="${escapeHTML(prob)}" style="width:0%"></div>
                     </div>
                 </div>
                 ${topFeats.length ? `<div class="persona-features">
-                    ${topFeats.map(f => `<span class="chip">${f}</span>`).join('')}
+                    ${topFeats.map(f => `<span class="chip">${escapeHTML(f)}</span>`).join('')}
                 </div>` : ''}
-                ${data.quote ? `<div class="persona-quote">"${data.quote}"</div>` : ''}
+                ${data.quote ? `<div class="persona-quote">"${escapeHTML(data.quote)}"</div>` : ''}
             `;
             grid.appendChild(card);
 
@@ -2966,9 +2966,9 @@ Think step-by-step before writing the JSON output.`;
                         : '<span class="badge" style="background:rgba(239,68,68,.2);color:var(--red)">Low</span>';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><span class="tbl-emoji">${row.emoji || '👤'}</span> ${row.persona}</td>
-                    <td>${row.chosen}</td>
-                    <td>${prob}%</td>
+                    <td><span class="tbl-emoji">${escapeHTML(row.emoji || '👤')}</span> ${escapeHTML(row.persona)}</td>
+                    <td>${escapeHTML(row.chosen)}</td>
+                    <td>${escapeHTML(prob)}%</td>
                     <td>${label}</td>
                 `;
                 tbody.appendChild(tr);
