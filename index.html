@@ -2002,13 +2002,14 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
 
 
         function renderCompetitorGrid() {
+            // Sentinel: Sanitize inputs to prevent XSS
             const grid = document.getElementById('comp-grid');
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
-      ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
+      <div class="comp-name">${escapeHTML(c.name)}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${escapeHTML(c.domain)}</div>
+      ${c.price ? `<span class="badge badge-yellow">$${escapeHTML(c.price)}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
         Include in analysis
@@ -2846,6 +2847,7 @@ Think step-by-step before writing the JSON output.`;
 
         // ── Render one persona card ───────────────────────
         function renderPersonaCard(data) {
+            // Sentinel: Sanitize inputs to prevent XSS
             const grid = document.getElementById('persona-grid');
             const prob = data.purchase_probability || 0;
             const probClass = prob >= 75 ? 'prob-high' : prob >= 50 ? 'prob-mid' : 'prob-low';
@@ -2855,9 +2857,9 @@ Think step-by-step before writing the JSON output.`;
             card.className = 'persona-card';
             card.id = `pc-${data.persona_id || data.persona.replace(/\s+/g, '_')}`;
             card.innerHTML = `
-                <div class="persona-avatar">${data.emoji || '👤'}</div>
-                <div class="persona-name">${data.persona}</div>
-                <div class="persona-chosen">Chose: <span>${data.product_chosen}</span></div>
+                <div class="persona-avatar">${escapeHTML(data.emoji || '👤')}</div>
+                <div class="persona-name">${escapeHTML(data.persona)}</div>
+                <div class="persona-chosen">Chose: <span>${escapeHTML(data.product_chosen)}</span></div>
                 <div class="prob-bar-wrap">
                     <div class="prob-bar-label">
                         <span>Purchase Probability</span>
@@ -2868,9 +2870,9 @@ Think step-by-step before writing the JSON output.`;
                     </div>
                 </div>
                 ${topFeats.length ? `<div class="persona-features">
-                    ${topFeats.map(f => `<span class="chip">${f}</span>`).join('')}
+                    ${topFeats.map(f => `<span class="chip">${escapeHTML(f)}</span>`).join('')}
                 </div>` : ''}
-                ${data.quote ? `<div class="persona-quote">"${data.quote}"</div>` : ''}
+                ${data.quote ? `<div class="persona-quote">"${escapeHTML(data.quote)}"</div>` : ''}
             `;
             grid.appendChild(card);
 
@@ -2957,6 +2959,7 @@ Think step-by-step before writing the JSON output.`;
             });
 
             // Persona table
+            // Sentinel: Sanitize inputs to prevent XSS
             const tbody = document.getElementById('sim-persona-tbody');
             tbody.innerHTML = '';
             (summary.persona_table || []).forEach(row => {
@@ -2966,8 +2969,8 @@ Think step-by-step before writing the JSON output.`;
                         : '<span class="badge" style="background:rgba(239,68,68,.2);color:var(--red)">Low</span>';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><span class="tbl-emoji">${row.emoji || '👤'}</span> ${row.persona}</td>
-                    <td>${row.chosen}</td>
+                    <td><span class="tbl-emoji">${escapeHTML(row.emoji || '👤')}</span> ${escapeHTML(row.persona)}</td>
+                    <td>${escapeHTML(row.chosen)}</td>
                     <td>${prob}%</td>
                     <td>${label}</td>
                 `;
