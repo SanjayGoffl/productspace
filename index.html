@@ -2006,8 +2006,8 @@ Use null for price if unknown. Return exactly 5 real competitors that exist in t
             grid.innerHTML = state.competitors.map((c, i) => `
     <div class="comp-card ${c.selected ? 'selected' : ''}" id="cc-${i}">
       <button class="remove-btn" onclick="removeCompetitor(${i})"><i class="fa-solid fa-xmark"></i></button>
-      <div class="comp-name">${c.name}</div>
-      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${c.domain}</div>
+      <div class="comp-name">${escapeHTML(c.name)}</div>
+      <div class="comp-domain"><i class="fa-solid fa-link"></i> ${escapeHTML(c.domain)}</div>
       ${c.price ? `<span class="badge badge-yellow">$${c.price}</span>` : ''}
       <label class="comp-check-label">
         <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="toggleCompetitor(${i}, this.checked)"/>
@@ -2398,7 +2398,7 @@ Think step-by-step before writing the JSON output.`;
                 const cov = Math.round(cnt / features.length * 100);
                 const diff = c.price && state.product.price ? (c.price - state.product.price) : null;
                 const diffStr = diff === null ? '—' : diff > 0 ? `< span class= "yes" > $${diff} cheaper ours</span > ` : diff < 0 ? ` < span class= "no" > $${Math.abs(diff)} more expensive</span > ` : '<span class="badge badge-yellow">Same</span>';
-                return `< tr ><td><strong>${c.name}</strong></td><td>${c.price ? '$' + c.price : '—'}</td><td>${cnt}</td><td>${cov}%</td><td>${diffStr}</td></tr > `;
+                return `< tr ><td><strong>${escapeHTML(c.name)}</strong></td><td>${c.price ? '$' + c.price : '—'}</td><td>${cnt}</td><td>${cov}%</td><td>${diffStr}</td></tr > `;
             }).join('');
         }
 
@@ -2496,7 +2496,7 @@ Think step-by-step before writing the JSON output.`;
                 const featCount = s.analysisData?.features?.length || 0;
                 return `< div class="hist-card" id = "hc-${s.id}" >
                     <button class="hist-del" onclick="deleteHistory('${s.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    <div class="h-name"><i class="fa-solid fa-box" style="color:var(--accent);margin-right:.35rem;"></i>${s.product.name}</div>
+                    <div class="h-name"><i class="fa-solid fa-box" style="color:var(--accent);margin-right:.35rem;"></i>${escapeHTML(s.product.name)}</div>
                     <div class="h-meta">
                         <span><i class="fa-solid fa-calendar-days"></i> ${dateStr}</span>
                         <span><i class="fa-solid fa-users"></i> ${compCount} competitors</span>
@@ -2966,8 +2966,8 @@ Think step-by-step before writing the JSON output.`;
                         : '<span class="badge" style="background:rgba(239,68,68,.2);color:var(--red)">Low</span>';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><span class="tbl-emoji">${row.emoji || '👤'}</span> ${row.persona}</td>
-                    <td>${row.chosen}</td>
+                    <td><span class="tbl-emoji">${escapeHTML(row.emoji || '👤')}</span> ${escapeHTML(row.persona)}</td>
+                    <td>${escapeHTML(row.chosen)}</td>
                     <td>${prob}%</td>
                     <td>${label}</td>
                 `;
